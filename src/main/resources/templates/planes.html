@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Planes</title>
+    <link rel="stylesheet" th:href="@{/css/navigation-with-button.css}"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
+</head>
+
+<body>
+<div th:replace="fragments/header.html :: defaultHeader"></div>
+<div class="py-3">
+    <div class="container">
+        <div class="row g-0" style="margin: 0;">
+            <div class="col p-1">
+                <h3>Planes</h3>
+            </div>
+            <div class="col-auto">
+                <div th:if="${#lists.isEmpty(airlines)}" class="d-inline-block" tabindex="0" data-bs-toggle="tooltip"
+                     data-bs-placement="bottom" title="You must add at least one airline">
+                    <a class="btn btn-primary disabled" type="button" th:href="@{/planes/new}">Add</a>
+                </div>
+                <div th:unless="${#lists.isEmpty(airlines)}">
+                    <a class="btn btn-primary" type="button" th:href="@{/planes/new}">Add</a>
+                </div>
+            </div>
+        </div>
+        <h2 th:if="${#lists.isEmpty(planes)}">
+            No planes.
+        </h2>
+        <div class="row" th:unless="${#lists.isEmpty(planes)}">
+            <div class="col-9">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered align-middle">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Range</th>
+                            <th>Number of seats</th>
+                            <th>Fuel capacity</th>
+                            <th>Speed</th>
+                            <th>MTOW</th>
+                            <th>Airline</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="plane : ${planes}">
+                            <td th:text="${plane.name}"></td>
+                            <td th:text="${plane.range}"></td>
+                            <td th:text="${plane.numberOfSeats}"></td>
+                            <td th:text="${plane.fuelCapacity}"></td>
+                            <td th:text="${plane.speed}"></td>
+                            <td th:text="${plane.mtow}"></td>
+                            <td th:text="${plane.airline.name}"></td>
+                            <td style="width: 1%">
+                                <div class="btn-group float-none d-md-flex justify-content-md-center" role="group">
+                                    <a class="btn btn-success" type="button"
+                                       th:href="@{/planes/{id}/edit(id=${plane.id})}"
+                                       style="width: 70px;max-width: 70px;">Edit</a>
+
+                                    <form th:method="DELETE" th:action="@{/planes/{id}(id=${plane.id})}"
+                                          th:object="${plane}">
+                                        <button class="btn btn-danger" name="action" type="submit"
+                                                style="width: 70px;max-width: 70px;">Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-3">
+                <form th:method="GET" th:action="@{/planes}">
+                    <div class="accordion mb-3" id="accordionFiltering">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="nameHeading">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#nameBody" aria-controls="nameBody" aria-expanded="true">
+                                    Name
+                                </button>
+                            </h2>
+                            <div id="nameBody" class="accordion-collapse collapse show" aria-labelledby="nameHeading">
+                                <div class="accordion-body">
+                                    <label for="name" hidden>Name</label>
+                                    <input class="form-control" id="name" name="name" placeholder="Name"
+                                           type="text" th:value="${param.name}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="rangeHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#rangeBody" aria-controls="rangeBody">
+                                    Range
+                                </button>
+                            </h2>
+                            <div id="rangeBody" class="accordion-collapse collapse" aria-labelledby="rangeHeading">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="rangeFrom" hidden>Range from</label>
+                                            <input class="form-control" id="rangeFrom" name="rangeFrom"
+                                                   placeholder="From" type="number" th:value="${param.rangeFrom}">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="rangeTo" hidden>Range to</label>
+                                            <input class="form-control" id="rangeTo" name="rangeTo" placeholder="To"
+                                                   type="number" th:value="${param.rangeTo}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="numberOfSeatsHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#numberOfSeatsBody" aria-controls="numberOfSeatsBody">
+                                    Number of seats
+                                </button>
+                            </h2>
+                            <div id="numberOfSeatsBody" class="accordion-collapse collapse"
+                                 aria-labelledby="numberOfSeatsHeading">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="numberOfSeatsFrom" hidden>Number of seats from</label>
+                                            <input class="form-control" id="numberOfSeatsFrom" name="numberOfSeatsFrom"
+                                                   placeholder="From" type="number"
+                                                   th:value="${param.numberOfSeatsFrom}">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="numberOfSeatsTo" hidden>Number of seats to</label>
+                                            <input class="form-control" id="numberOfSeatsTo" name="numberOfSeatsTo"
+                                                   placeholder="To" type="number" th:value="${param.numberOfSeatsTo}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="fuelCapacityHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#fuelCapacityBody" aria-controls="fuelCapacityBody">
+                                    Fuel capacity
+                                </button>
+                            </h2>
+                            <div id="fuelCapacityBody" class="accordion-collapse collapse"
+                                 aria-labelledby="fuelCapacityHeading">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="fuelCapacityFrom" hidden>Fuel capacity from</label>
+                                            <input class="form-control" id="fuelCapacityFrom" name="fuelCapacityFrom"
+                                                   placeholder="From" type="number"
+                                                   th:value="${param.fuelCapacityFrom}">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="fuelCapacityTo" hidden>Fuel capacity to</label>
+                                            <input class="form-control" id="fuelCapacityTo" name="fuelCapacityTo"
+                                                   placeholder="To" type="number" th:value="${param.fuelCapacityTo}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="speedHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#speedBody" aria-controls="speedBody">
+                                    Speed
+                                </button>
+                            </h2>
+                            <div id="speedBody" class="accordion-collapse collapse"
+                                 aria-labelledby="speedHeading">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="speedFrom" hidden>Speed from</label>
+                                            <input class="form-control" id="speedFrom" name="speedFrom"
+                                                   placeholder="From" type="number" th:value="${param.speedFrom}">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="speedTo" hidden>Speed to</label>
+                                            <input class="form-control" id="speedTo" name="speedTo" placeholder="To"
+                                                   type="number" th:value="${param.speedTo}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="mtowHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#mtowBody" aria-controls="mtowBody">
+                                    MTOW
+                                </button>
+                            </h2>
+                            <div id="mtowBody" class="accordion-collapse collapse"
+                                 aria-labelledby="mtowHeading">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="mtowFrom" hidden>MTOW from</label>
+                                            <input class="form-control" id="mtowFrom" name="mtowFrom" placeholder="From"
+                                                   type="number" th:value="${param.mtowFrom}">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="mtowTo" hidden>MTOW to</label>
+                                            <input class="form-control" id="mtowTo" name="mtowTo" placeholder="To"
+                                                   type="number" th:value="${param.mtowTo}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="airlineHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#airlineBody" aria-controls="airlineBody">
+                                    Airline
+                                </button>
+                            </h2>
+                            <div id="airlineBody" class="accordion-collapse collapse"
+                                 aria-labelledby="airlineHeading">
+                                <div class="accordion-body">
+                                    <label for="airline" hidden>Airline</label>
+                                    <select class="form-control" id="airline" name="airline"
+                                            th:value="${param.airline}">
+                                        <option hidden disabled selected value="">Select airline...</option>
+                                        <option th:each="airline : ${airlines}" th:value="${airline.id}"
+                                                th:text="${airline.name}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button name="action" class="w-100 btn btn-lg btn-primary" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+</script>
+</body>
+
+</html>
